@@ -7,28 +7,26 @@ const RatedList = ({ id }) => {
   const [valueStar, setValueStar] = useState([]);
   const [starFull, setStarFull] = useState(0);
 
-  const movieRateStars = async (starFull) => {
+  const movieRateStars = async (starFull ) => {
     const data = await movieDataBase
-      .post("/movie/movie_id/rating", {
-        headers: {
-          Content_Type: "application/json;charset=utf-8",
-        },
+      .post(`/movie/${id}/rating`,
+          {
+            value: starFull,
+          }
+          , {
         params: {
-          guest_session_id: window.localStorage.getItem('guest'),
-          movie_id: id, 
+          guest_session_id: localStorage.getItem('guest'),
+          session_id: localStorage.getItem('session')
         },
-        body: {
-          value: starFull,
-        },
+
       })
       .catch((e) => console.log(`${e.name} - ТЫ ЗАЕБАЛА МЕНЯ НАХУЙ УЖЕ `));
 
-    setValueStar(data);
   };
 
   const handleClickStar = (star) => {
     setStarFull(star);
-    movieRateStars();
+    movieRateStars(star)
   };
 
  

@@ -16,23 +16,24 @@ const MovieList = () => {
   const [datas, setDatas] = useState([]);
 
   const RequestToken = async () => {
+    if(localStorage.getItem('request_token')) return
     const createRequestToken = await movieDataBase.get(
       "/authentication/token/new"
     );
-    localStorage.setItem("create", `${createRequestToken.data.request_token}`);
+    localStorage.setItem("request_token", `${createRequestToken.data.request_token}`);
   };
 
   const createSessionId = async () => {
+    if(localStorage.getItem('session')) return
+
     const sessionId = await movieDataBase.post("/authentication/session/new", {
-      body: {
-        request_token: localStorage.getItem("create"),
-      },
+        request_token: localStorage.getItem("request_token")
     });
-    // console.log(createSessionId);
     localStorage.setItem("session", `${sessionId.data.session_id}`);
   };
 
   const guestToken = async () => {
+    if(localStorage.getItem('guest')) return
     const guestKey = await movieDataBase.get(
       "/authentication/guest_session/new"
     );
@@ -62,8 +63,8 @@ const MovieList = () => {
 
   const createAllTokens = async () => {
     await RequestToken();
-    await createSessionId();
     await guestToken();
+    await createSessionId();
   };
 
   useEffect(() => {
